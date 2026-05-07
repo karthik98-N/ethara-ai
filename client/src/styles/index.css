@@ -1,0 +1,100 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-ink: #ffffff;
+  --color-panel: #ffffff;
+  --text-primary: #334155;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-base: rgba(15, 23, 42, 0.1);
+  --bg-gradient: linear-gradient(rgba(37, 99, 235, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.045) 1px, transparent 1px),
+    linear-gradient(135deg, #ffffff 0%, #f8fafc 52%, #eef6ff 100%);
+  --shadow-glow: 0 24px 70px rgba(15, 23, 42, 0.08);
+  
+  color-scheme: light;
+  background: #f8fafc;
+  color: var(--text-primary);
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+.dark {
+  --color-ink: #1e293b;
+  --color-panel: rgba(30, 41, 59, 0.9);
+  --text-primary: #ffffff;
+  --text-secondary: #f1f5f9;
+  --text-muted: #cbd5e1;
+  --border-base: rgba(255, 255, 255, 0.15);
+  --bg-gradient: linear-gradient(rgba(37, 99, 235, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(37, 99, 235, 0.08) 1px, transparent 1px),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  --shadow-glow: 0 24px 70px rgba(0, 0, 0, 0.5);
+  
+  color-scheme: dark;
+  background: #0f172a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg-gradient);
+  background-size: 44px 44px, 44px 44px, auto;
+  transition: background-color 0.3s ease;
+}
+
+.glass {
+  border: 1px solid var(--border-base);
+  background: var(--color-panel);
+  backdrop-filter: blur(18px);
+  box-shadow: var(--shadow-glow);
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Utility Overrides for Theme Support */
+.text-primary { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+
+.bg-ink {
+  background-color: var(--color-ink) !important;
+}
+
+.bg-panel {
+  background-color: var(--color-panel) !important;
+}
+
+.bg-ink {
+  background-color: var(--color-ink) !important;
+}
+
+.border-white\/10, .border-white\/15, .border-white\/30 {
+  border-color: var(--border-base) !important;
+}
+
+input, textarea, select {
+  color: var(--text-primary) !important;
+  background-color: var(--color-panel) !important;
+  border-color: var(--border-base) !important;
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+
+.thin-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  opacity: 0.3;
+  border-radius: 999px;
+}

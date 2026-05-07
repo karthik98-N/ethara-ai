@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  COMPLETED
+  ARCHIVED
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  REVIEW
+  COMPLETED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model User {
+  id             String          @id @default(cuid())
+  name           String
+  email          String          @unique
+  password       String
+  role           Role            @default(MEMBER)
+  xp             Int             @default(0)
+  streak         Int             @default(0)
+  resetOtp       String?
+  resetOtpExpires DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  createdProjects Project[]      @relation("ProjectCreator")
+  projectMembers ProjectMember[]
+  assignedTasks  Task[]          @relation("TaskAssignee")
+  comments       Comment[]
+  attachments    Attachment[]
+}
+
+model Project {
+  id          String          @id @default(cuid())
+  title       String
+  description String          @default("")
+  deadline    DateTime?
+  status      ProjectStatus   @default(ACTIVE)
+  createdById String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  creator     User            @relation("ProjectCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  members     ProjectMember[]
+  tasks       Task[]
+  comments    Comment[]
+}
+
+model ProjectMember {
+  id        String   @id @default(cuid())
+  projectId String
+  userId    String
+  joinedAt  DateTime @default(now())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+}
+
+model Task {
+  id           String       @id @default(cuid())
+  title        String
+  description  String       @default("")
+  projectId    String
+  assignedToId String?
+  priority     Priority     @default(MEDIUM)
+  status       TaskStatus   @default(TODO)
+  deadline     DateTime?
+  tags         String[]     @default([])
+  recurring    Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  project      Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee     User?        @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  comments     Comment[]
+  attachments  Attachment[]
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  message   String
+  taskId    String
+  userId    String
+  projectId String?
+  createdAt DateTime @default(now())
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  project   Project? @relation(fields: [projectId], references: [id])
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  url       String
+  fileName  String
+  taskId    String
+  userId    String
+  createdAt DateTime @default(now())
+  task      Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
