@@ -4,7 +4,7 @@ import { api } from "../api/http.js";
 
 export const useAppStore = create((set, get) => ({
   user: demoUser,
-  token: "demo-token",
+  token: localStorage.getItem("flowforge_token"),
   theme: localStorage.getItem("ethara_theme") || "light",
   toggleTheme: () => {
     const newTheme = get().theme === "light" ? "dark" : "light";
